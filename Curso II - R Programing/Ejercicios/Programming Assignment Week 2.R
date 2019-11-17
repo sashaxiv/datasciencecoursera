@@ -1,4 +1,5 @@
-pollutmean <- function (directory, pollutant, id = 1:332){
+##Esta es mucho más efectiva en tiempo de ejecución
+pollutmean_Pros <- function (directory, pollutant, id = 1:332){
   
   setwd(directory) ##me muevo al directorio donde tengo los CSV
   file_list <- list.files(directory) ##Me quedo con el nombre de los CSV
@@ -17,3 +18,23 @@ pollutmean("/DataScience/datasciencecoursera/Curso II - R Programing/Ejercicios/
 pollutmean("/DataScience/datasciencecoursera/Curso II - R Programing/Ejercicios/specdata/","nitrate",70:72)
 pollutmean("/DataScience/datasciencecoursera/Curso II - R Programing/Ejercicios/specdata/","nitrate",23)
 
+##Mi versión con lo aprendido hasta ahora
+pollutmean_Kike <- function (directory, pollutant, id = 1:332){
+  
+  setwd(directory) ##me muevo al directorio donde tengo los CSV
+  file_list <- list.files(directory) ##Me quedo con el nombre de los CSV
+  data <- data.frame()
+  
+  for(i in file_list){
+    tmpFile = read.csv(i,header = TRUE)
+    data<-rbind(data,tmpFile)
+  }
+  
+  tmpDataSet = subset(data,ID %in% id)
+  meanKike = mean(tmpDataSet[,pollutant],na.rm = TRUE) 
+  return (meanKike)
+}
+
+pollutmean_Kike("/DataScience/datasciencecoursera/Curso II - R Programing/Ejercicios/specdata/","nitrate",23)
+pollutmean_Kike("/DataScience/datasciencecoursera/Curso II - R Programing/Ejercicios/specdata/","nitrate",70:72)
+pollutmean_Kike("/DataScience/datasciencecoursera/Curso II - R Programing/Ejercicios/specdata/","nitrate",23)
