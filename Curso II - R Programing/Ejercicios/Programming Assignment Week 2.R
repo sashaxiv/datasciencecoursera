@@ -1,3 +1,11 @@
+
+#####################################################################################
+#####################################################################################
+
+          #EJERCICIO I
+
+#####################################################################################
+#####################################################################################
 ##Esta es mucho más efectiva en tiempo de ejecución
 pollutmean_Pros <- function (directory, pollutant, id = 1:332){
   
@@ -38,3 +46,14 @@ pollutmean_Kike <- function (directory, pollutant, id = 1:332){
 pollutmean_Kike("/DataScience/datasciencecoursera/Curso II - R Programing/Ejercicios/specdata/","nitrate",23)
 pollutmean_Kike("/DataScience/datasciencecoursera/Curso II - R Programing/Ejercicios/specdata/","nitrate",70:72)
 pollutmean_Kike("/DataScience/datasciencecoursera/Curso II - R Programing/Ejercicios/specdata/","nitrate",23)
+
+
+
+#####################################################################################
+#####################################################################################
+
+#EJERCICIO II
+
+#####################################################################################
+#####################################################################################
+
