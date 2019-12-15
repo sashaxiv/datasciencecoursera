@@ -31,7 +31,7 @@ masterActivityLabels <- fread(file.path(dataFolder, "UCI HAR Dataset/activity_la
 masterFeatures <- fread(file.path(dataFolder, "UCI HAR Dataset/features.txt")
                   , col.names = c("index", "featureNames"))
 
-#As \ itself needs to be escaped in R, R requires double backslash to escape these metacharacters, like \\(.
+#TIP: As \ itself needs to be escaped in R, R requires double backslash to escape these metacharacters, like \\(.
 posfeaturesWanted <- grep("(mean|std)\\(\\)", features[, featureNames])
 masterFeaturesWanted <- masterFeatures[posfeaturesWanted, featureNames]
 
