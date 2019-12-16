@@ -54,6 +54,8 @@ masterFeaturesWanted <- masterFeatures[posfeaturesWanted, featureNames]
 
 #Data dable with master of measuremens
 masterFeaturesWanted <- gsub('[()]', '', masterFeaturesWanted)
+
+#Calling the function to fix variable names
 masterFeaturesWanted <- fixLabelNames(masterFeaturesWanted)
 
 # Load train datasets with only measurementes wanted
@@ -88,11 +90,13 @@ mergedTrainingTest[["Activity"]] <- factor(mergedTrainingTest[, Activity]
                                  , levels = masterActivityLabels[["idLabels"]]
                                  , labels = masterActivityLabels[["activityName"]])
 
-FinalData <- mergedTrainingTest %>%
+
+#Final step to execute task 5. Average of eacch variable by ativity & subject
+finalData <- mergedTrainingTest %>%
   group_by(SubjectNum, Activity) %>%
   summarise_all(ist(mean))
 
 
-write.table(FinalData, "FinalData.txt", row.name=FALSE)
+write.table(finalData, "FinalData.txt", row.name=FALSE)
 
 
