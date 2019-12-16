@@ -14,6 +14,23 @@
 
 # DataTable Tutorial here: https://riptutorial.com/data-table/topic/3389/getting-started-with-data-table
 
+# Function to deal with step 4 --> Appropriately labels the data set with descriptive variable names
+fixLabelNames <- function (x){
+  
+  x<-gsub("Acc", "Accelerometer", x)
+  x<-gsub("Gyro", "Gyroscope", x)
+  x<-gsub("BodyBody", "Body", x)
+  x<-gsub("Mag", "Magnitude", x)
+  x<-gsub("^t", "Time", x)
+  x<-gsub("^f", "Frequency", x)
+  x<-gsub("tBody", "TimeBody", x)
+  x<-gsub("-mean()", "Mean", x, ignore.case = TRUE)
+  x<-gsub("-std()", "STD", x, ignore.case = TRUE)
+  x<-gsub("-freq()", "Frequency", x, ignore.case = TRUE)
+  x<-gsub("angle", "Angle", x)
+  x<-gsub("gravity", "Gravity", x)
+  
+}
 
 #Load Required Packages
 install.packages("data.table")
@@ -32,12 +49,12 @@ masterFeatures <- fread(file.path(dataFolder, "UCI HAR Dataset/features.txt")
                   , col.names = c("index", "featureNames"))
 
 #TIP: As \ itself needs to be escaped in R, R requires double backslash to escape these metacharacters, like \\(.
-posfeaturesWanted <- grep("(mean|std)\\(\\)", features[, featureNames])
+posfeaturesWanted <- grep("(mean|std)\\(\\)", masterFeatures[, featureNames])
 masterFeaturesWanted <- masterFeatures[posfeaturesWanted, featureNames]
 
 #Data dable with master of measuremens
 masterFeaturesWanted <- gsub('[()]', '', masterFeaturesWanted)
-
+masterFeaturesWanted <- fixLabelNames(masterFeaturesWanted)
 
 # Load train datasets with only measurementes wanted
 train <- fread(file.path(dataFolder, "UCI HAR Dataset/train/X_train.txt"))[, posfeaturesWanted, with = FALSE]
@@ -73,10 +90,9 @@ mergedTrainingTest[["Activity"]] <- factor(mergedTrainingTest[, Activity]
 
 FinalData <- mergedTrainingTest %>%
   group_by(SubjectNum, Activity) %>%
-  summarize(mean)
+  summarise_all(ist(mean))
 
 
-mergedTrainingTest <- reshape2::melt(data = mergedTrainingTest, id = c("SubjectNum", "Activity"))
-mergedTrainingTest <- reshape2::dcast(data=mergedTrainingTest, SubjectNum + Activity ~ variable, value='value', FUN=mean)
+write.table(FinalData, "FinalData.txt", row.name=FALSE)
 
-data.table::fwrite(x = combined, file = "tidyData.txt", quote = FALSE)
+
