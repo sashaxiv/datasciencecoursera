@@ -2,15 +2,19 @@ Getting and Cleaning Data Course Project
 
 This repository is a submission for Getting and Cleaning Data course project.
 
+**********
 Dataset
+**********
 Human Activity Recognition Using Smartphones
 https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip 
 
 
+**********
 Files:
-CodeBook.md <- A code book that describes variables and functions 
+**********
+ * CodeBook.md <- A code book that describes variables and functions 
 
-Run_analysis.R <- Runs data preparation following course project’s definition:
+ * Run_analysis.R <- Runs data preparation following course project’s definition:
   1 - Merges the training and the test sets to create one data set.
   2 - Extracts only the measurements on the mean and standard deviation for each measurement.
   3 - Uses descriptive activity names to name the activities in the data set
