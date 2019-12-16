@@ -1,6 +1,6 @@
 The run_analysis.R script executes the data preparation as described in the course project’s definition.
 
-If you are not familiar with datables, here you cand find a good tutorial:
+If you are still not familiar with datables, here you cand find a good tutorial:
 https://riptutorial.com/data-table/topic/3389/getting-started-with-data-table
 
 
