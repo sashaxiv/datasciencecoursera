@@ -9,11 +9,11 @@ dataFile <- "data\\household_power_consumption.txt"
 data <- read.table(dataFile, header=TRUE, sep=";", stringsAsFactors=FALSE, dec=".")
 
 # Filter Dates: Our overall goal here is simply to examine how household energy usage varies over a 2-day period in February
-subSetData <- data[data$Date %in% c("14/2/2007","15/2/2007") ,]
+subSetData <- data[data$Date %in% c("1/2/2007","2/2/2007") ,]
 #str(subSetData)
 #summary(subSetData)
 
-# Prevents histogram from printing in scientific notation
+# Prevents plot from printing in scientific notation
 globalActivePower <- as.numeric(subSetData$Global_active_power)
 
 #Change Date Column to Date Type

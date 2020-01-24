@@ -18,7 +18,7 @@ powerDT[, Global_active_power := lapply(.SD, as.numeric), .SDcols = c("Global_ac
 powerDT[, Date := lapply(.SD, as.Date, "%d/%m/%Y"), .SDcols = c("Date")]
 
 # Filter Dates: Our overall goal here is simply to examine how household energy usage varies over a 2-day period in February
-powerDT <- powerDT[(Date >= "2007-02-14") & (Date <= "2007-02-15")]
+powerDT <- powerDT[(Date >= "2007-02-01") & (Date <= "2007-02-02")]
 
 #Creates Picture File in size specified by course project
 png("plot1.png", width=480, height=480)
