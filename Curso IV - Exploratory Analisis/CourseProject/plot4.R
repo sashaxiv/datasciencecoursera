@@ -3,6 +3,9 @@
 #Setting working directory to where data is located
 setwd("C:\\Users\\enriquesf\\Documents\\datasciencecoursera\\Curso IV - Exploratory Analisis\\CourseProject")
 
+#As i live in Spain, let´s change locale to plot days in english
+Sys.setlocale("LC_ALL", "English")
+
 
 #Reading data
 dataFile <- "./data/household_power_consumption.txt"
@@ -31,6 +34,7 @@ datetime <- strptime(paste(subSetData$Date, subSetData$Time, sep=" "), "%d/%m/%Y
 
 #Creates Picture File in size specified by course project
 png("plot4.png", width=480, height=480)
+
 
 #breaking device into 4 parts
 par(mfrow = c(2, 2)) 

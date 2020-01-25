@@ -3,6 +3,8 @@
 #Setting working directory to where data is located
 setwd("C:\\Users\\enriquesf\\Documents\\datasciencecoursera\\Curso IV - Exploratory Analisis\\CourseProject")
 
+#As i live in Spain, let´s change locale to plot days in english
+Sys.setlocale("LC_ALL", "English")
 
 #Reading data
 dataFile <- "./data/household_power_consumption.txt"
