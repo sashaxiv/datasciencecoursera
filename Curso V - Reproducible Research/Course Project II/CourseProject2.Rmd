@@ -1,0 +1,178 @@
+---
+title: "Analysis of U.S.A Storm Event Data and the Impact on Health and Economy"
+author: "Kike SF"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+## Synopsis
+Storms and other severe weather events can cause both public health and economic problems for communities and municipalities. Many severe events can result in fatalities, injuries, and property damage, and preventing such outcomes to the extent possible is a key concern.
+
+This project involves exploring the U.S. National Oceanic and Atmospheric Administration's (NOAA) storm database. This database tracks characteristics of major storms and weather events in the United States, including when and where they occur, as well as estimates of any fatalities, injuries, and property damage.
+
+The following analysis investigates which types of severe weather events are most harmful on:
+
+1. Health (injuries and fatalities) 
+2. Property and crops (economic consequences)
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Data Processing (Downloading, Loading and Cleaning Data)
+
+```{r}
+
+# Loading required packages
+
+library(plyr)
+library(dplyr)
+library(knitr) 
+library(png)
+
+```
+
+### Downloading data file
+```{r}
+
+
+dataFile = "./repdata_data_StormData.csv.bz2"
+fileURL <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2"
+if(!file.exists(dataFile)){
+  download.file(fileURL, destfile="./repdata_data_StormData.csv.bz2", method="auto")
+}
+```
+
+### Reading and cleaning downloaded data
+```{r}
+
+stormData <- read.csv("./repdata_data_StormData.csv.bz2")
+str(stormData)
+head(stormData,3)
+  
+Statelist<- list("AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID", "IL","IN","KS","KY","LA","MA","MD","ME","MH","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY", "OH","OK","OR","PA","PR","PW","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY")
+
+#CLEAN 1 - We only need rows with state info.
+stormData <- stormData[ stormData$STATE %in% Statelist,]
+
+#CLEAN 2 - Subset columns we do really need for analysis
+stormDataTidy <- subset(stormData, EVTYPE != "?"
+                                   &
+                                   (FATALITIES > 0 | INJURIES > 0 | PROPDMG > 0 | CROPDMG > 0),
+                                   select = c("EVTYPE",
+                                              "FATALITIES",
+                                              "INJURIES", 
+                                              "PROPDMG",
+                                              "PROPDMGEXP",
+                                              "CROPDMG",
+                                              "CROPDMGEXP",
+                                              "BGN_DATE",
+                                              "END_DATE",
+                                              "STATE"))
+
+stormDataTidy$EVTYPE <- toupper(stormDataTidy$EVTYPE)
+
+```
+
+### This next section converts exponent Columns into Actual Exponents instead of (-,+, H, K, etc) 
+```{r}
+
+#creates a backup csv file and reads the file with strings as characters
+write.csv(stormDataTidy,'storm.csv')
+stormDataTidy<-read.csv("storm.csv",row.names=NULL, stringsAsFactors = FALSE)
+
+
+##creates replacement dataframe for PROPDMGEXP and CROPDMGEXP
+PROPDMGEXP = c("H","h","K","k","M","m","B","b","+","-","?","1","2","3","4","5","6","7","8","0","") 
+PROPREPVAL = c("10^2","10^2","10^3","10^3","10^6","10^6","10^9","10^9","10^0","10^0","10^0","10^1","10^2","10^3","10^4","10^5","10^6","10^7","10^8","10^0","0")
+
+CROPDMGEXP = c("H","h","K","k","M","m","B","b","+","-","?","1","2","3","4","5","6","7","8","0","") 
+CROPREPVAL = c("10^2","10^2","10^3","10^3","10^6","10^6","10^9","10^9","10^0","10^0","10^0","10^1","10^2","10^3","10^4","10^5","10^6","10^7","10^8","10^0","0")
+
+
+#merges the new replacement values with the original dataframe
+data_propexp = data.frame(PROPDMGEXP, PROPREPVAL)
+storm2 <- merge(x=stormDataTidy, y=data_propexp, by = "PROPDMGEXP", all.x=TRUE)
+
+data_cropexp = data.frame(CROPDMGEXP, CROPREPVAL)
+storm3 <- merge(x=storm2, y=data_cropexp, by = "CROPDMGEXP", all.x=TRUE)
+
+#creates another backup prior to plotting
+write.csv(storm3,'storm3.csv')
+storm3<-read.csv("storm3.csv",row.names=NULL, stringsAsFactors = TRUE)
+
+```
+
+## Results
+
+### Aggregate and summarizes the top 5 events with most fatalities 
+```{r}
+  ##library for colors
+  library(RColorBrewer)
+  coul <- brewer.pal(5, "Set2") 
+  
+  deaths <- aggregate(FATALITIES~EVTYPE, storm3, sum)
+  deaths <- deaths[with(deaths, order(-FATALITIES)), ]
+  deaths <- deaths[1:5,]
+  
+  str(deaths)
+  head(deaths,4)
+  
+  png("plotFatalities.png", width=800, height=600)
+  plot1 <- barplot(deaths$FATALITIES, names = deaths$EVTYPE, xlab = "Events", ylab = "Fatalities", 
+                   main = "Deaths by Event Type", col=coul)
+  dev.off() 
+  img1 <- readPNG("./plot1.png")
+  grid::grid.raster(img1)
+
+```
+
+### Aggregate and summarizes the top 5 events with most injuries 
+
+```{r}  
+  injur <- aggregate(INJURIES~EVTYPE, storm3, sum)
+  injur <- injur[with(injur, order(-INJURIES)), ]
+  injur <- injur[1:5,]
+  
+  str(injur)
+  head(injur,4)
+  
+  png("plotInjuries.png", width=800, height=600)
+  plot2 <- barplot(injur$INJURIES, names = injur$EVTYPE, xlab = "Events", ylab = "Injuries", main = "Injuries by Event     Type",col=coul)
+  dev.off() 
+
+  
+# Set factors as numeric  
+storm3[,"CROPDMG"] <- as.numeric(as.character(storm3[,"CROPDMG"]))
+storm3[,"CROPREPVAL"] <- as.numeric(as.character(storm3[,"CROPREPVAL"]))
+storm3[,"PROPDMG"] <- as.numeric(as.character(storm3[,"PROPDMG"]))
+storm3[,"PROPREPVAL"] <- as.numeric(as.character(storm3[,"PROPREPVAL"]))
+
+```
+
+According to the plot we have just seen, we can easily see that Tornado is the major cause with respect to population health, both for causing fatalities and injuries.
+
+## Mutates the dataframe by using the exponents for crop and property damage, then adds the two to determine economic cost.  
+```{r}
+storm4 <- mutate(storm3, CROPTOTAL = CROPREPVAL * CROPDMG)
+storm5 <- mutate(storm4, PROPTOTAL = PROPREPVAL * PROPDMG)
+storm6 <- mutate(storm5, COSTTOTAL = CROPTOTAL + PROPTOTAL)
+
+cost <- aggregate(COSTTOTAL~EVTYPE, storm6, sum)
+cost <- cost[with(cost, order(-COSTTOTAL)), ]
+cost <- cost[1:5,]
+
+head(cost,4)
+
+png("plotEconomic.png", width=800, height=600)
+plot3 <- barplot(cost$COSTTOTAL, names = cost$EVTYPE, xlab = "Type of Event", ylab = "Total Economic Damage", main = "Total Damage Costs by Event Type",col=coul)
+dev.off() 
+
+
+```
+
+On the other hand, in terms of cost of damage, we can conclude that Flood has the highest economic impact 
