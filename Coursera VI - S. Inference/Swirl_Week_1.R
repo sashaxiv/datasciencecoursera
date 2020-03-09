@@ -1,8 +1,6 @@
 install.packages("swirl")
 packageVersion("swirl")
-library(swirl)
-install_from_swirl("Statistical Inference")
-swirl()
+
 
 | Please choose a course, or type 0 to exit swirl.
 
@@ -271,7 +269,7 @@ Selection: 3
 | presence of disease and the other given the absence. Specifically, DLR_+ = P(+|D) / P(+|~D). Similarly, the DLR_- is defined as a
 | ratio. Which of the following do you think represents the DLR_-?
   
-  1: I haven't a clue.
+1: I haven't a clue.
 2: P(+|~D) / P(-|D)
 3: P(-|D) / P(-|~D)
 4: P(-|D) / P(+|~D)
@@ -280,7 +278,7 @@ Selection: 3
 
 | All that hard work is paying off!
 
-  |==========================================================================                                                   |  60%
+|==========================================================================                                                   |  60%
 | Recall that P(+|D) and P(-|~D), (test sensitivity and specificity respectively) are accuracy rates of a diagnostic test for the two
 | possible results. They should be close to 1 because no one would take an inaccurate test, right? Since DLR_+ = P(+|D) / P(+|~D) we
 | recognize the numerator as test sensitivity and the denominator as the complement of test specificity.
@@ -430,5 +428,5 @@ Selection: 1
 
 ...
 
-  |==========================================================================================================================   |  98%
+==========================================================================================================================   |  98%
 | Congrats! You've concluded this lesson on conditional probability. We hope you liked it unconditionally.
