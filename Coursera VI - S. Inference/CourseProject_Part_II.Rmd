@@ -1,0 +1,100 @@
+---
+title: "Course Project - Part II"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Part 2: Basic Inferential Data Analysis Instructions
+
+## Instructions
+
+Now in the second portion of the project, we're going to analyze the ToothGrowth data in the R datasets package.
+
+1. Load the ToothGrowth data and perform some basic exploratory data analyses
+2. Provide a basic summary of the data.
+3. Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose. (Only use the techniques from class, even if there's other approaches worth considering)
+4. State your conclusions and the assumptions needed for your conclusions.
+
+## Task I
+
+```{r, results='hide', message=FALSE}
+library(datasets)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r}
+# Load ToothGrowth Data and explore it
+data("ToothGrowth")
+ToothGrowth %>%
+  group_by(supp,dose) %>%
+  summarise(avg_len = mean(len),
+            Q25_len = quantile(len,0.25),
+            Q75_len = quantile(len,0.75),
+            sd_len = sd(len)) -> data
+data
+```
+
+These dataset deals with the effect of vitamin C on tooth growth in guinea pigs. The response is the length of odontoblasts (cells responsible for tooth growth) in 60 guinea pigs. Each animal received one of three dose levels of vitamin C (0.5, 1, and 2 mg/day) by one of two delivery methods, orange juice or ascorbic acid (a form of vitamin C and coded as VC).
+
+Let's plot the data and explore it
+
+```{r}
+ggplot(data=ToothGrowth, aes(x=as.factor(dose), y=len, fill=supp)) +
+  geom_boxplot() +
+  xlab("Dose in mg") +
+  ylab("Tooth length") +
+  guides(fill=guide_legend(title="Supplement type"))
+```
+
+According to our plot, there seems to be:
+
+1. There is a trend between dose and len.  
+2. There is a trend between dose and supp.
+
+It's time to check both hypothesys:
+
+### Hyp I: Dose vs Len
+### H0- There is no effect of dosage on tooth growth
+
+```{r}
+# arrange our dateset
+dose_05mg <- filter(ToothGrowth, dose == 0.5)
+dose_1mg <- filter(ToothGrowth, dose == 1)
+dose_2mg <- filter(ToothGrowth, dose == 2)
+
+# compare between dose of 0.5 and 1
+t.test(dose_1mg$len, dose_05mg$len, alternative = "greater")
+
+# compare between dose of 1 and 2
+t.test(dose_2mg$len, dose_1mg$len, alternative = "greater")
+```
+
+**As both p-values are less than 0.001, it is highly unlikely that there is no effect of dosage on tooth growth. 
+Therefore, we reject our H0. The higher dosages the higher tooth growth.**
+
+### Hyp II: Dose vs Sup
+### H0- There is no difference between supplements OJ and VC
+
+```{r}
+#Dosage: 0.5mg
+dose_OJ_05mg <- filter(dose_05mg, supp == "OJ")
+dose_VC_05mg <- filter(dose_05mg, supp == "VC")
+t.test(dose_OJ_05mg$len, dose_VC_05mg$len, alternative = "greater")
+
+#Dosage: 1mg
+dose_OJ_1mg <- filter(dose_1mg, supp == "OJ")
+dose_VC_1mg <- filter(dose_1mg, supp == "VC")
+t.test(dose_OJ_1mg$len, dose_VC_1mg$len, alternative = "greater")
+
+#Dosage: 2mg
+dose_OJ_2mg <- filter(dose_2mg, supp == "OJ")
+dose_VC_2mg <- filter(dose_2mg, supp == "VC")
+t.test(dose_OJ_2mg$len, dose_VC_2mg$len, alternative = "greater")
+```
+
+**According to the obtained p-values, for dosages of 0.5 and 1 mg, we must reject HO, so OJ is better than VC.
+On the other hand, for dosages of 2mg, our p-value is compatible with H0, therefore the are no differents between OJ and VC**
