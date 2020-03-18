@@ -974,7 +974,7 @@ Selection: 1
 | You got it!
 
 |============================================================================================================== |93%
-| We see a probability of about .03. Should we reject or fail to reject H_0? (Remember those helpful pictures with shaded areas.
+| We see a probability of about  .03. Should we reject or fail to reject H_0? (Remember those helpful pictures with shaded areas.
 | Smaller areas mean smaller probabilities and vice versa.)
 
 1: Reject

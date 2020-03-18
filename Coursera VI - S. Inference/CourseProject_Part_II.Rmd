@@ -1,6 +1,7 @@
 ---
 title: "Course Project - Part II"
 output: pdf_document
+fontsize: 9pt
 ---
 
 ```{r setup, include=FALSE}

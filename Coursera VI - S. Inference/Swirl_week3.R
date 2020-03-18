@@ -695,6 +695,7 @@ Selection: 3
 ...
 
 |============================================================================================================= |  99%
-| Congrats! You've concluded this rather t-dious lesson on all things t related - statistics, distributions, intervals.
+| Congrats! You've concluded this rather t-dious lesson on all things t related -
+statistics, distributions, intervals.
 | Hope you're not too teed off!
   
