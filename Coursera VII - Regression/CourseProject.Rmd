@@ -1,0 +1,85 @@
+---
+title: "Regression Models Course Project"
+output: pdf_document
+fontsize: 6pt
+author: Kike Sedes
+---
+\fontfamily{cmr}
+\fontsize{8}{12}
+\selectfont
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# MrCars Data Analysis.
+
+## Instructions
+
+You work for Motor Trend, a magazine about the automobile industry. Looking at a data set of a collection of cars, they are interested in exploring the relationship between a set of variables and miles per gallon (MPG) (outcome). They are particularly interested in the following two questions:
+
+1. Is an automatic or manual transmission better for MPG
+2. Quantify the MPG difference between automatic and manual transmissions
+
+## Exploratory Analysis
+Let`s start by loading the mtcars dataset and perform some basic exploratory analysis 
+```{r message=FALSE, results='hide', echo=FALSE}
+library(ggplot2)
+library(dplyr)
+library(datasets)
+data(mtcars)
+``` 
+```{r}
+head(mtcars,3)
+```
+As the am column is not a factor, let's create a new variable for type of gearbox
+```{r fig.width=5, fig.height=3}
+mtcars$vs <- factor(mtcars$vs)
+mtcars$gearbox <- factor(mtcars$am, labels=c("Automatic","Manual"))
+boxplot(mpg ~ gearbox, data = mtcars, col = (c("green","red")), ylab = "MPG", xlab = "Gearbox")
+means<-mtcars %>%
+  group_by(gearbox) %>%
+  summarise(avg_mpg = mean(mpg))
+means
+```
+According to our exploratory analysis, data leads us to think that vehicles with a manual transmission provide higher MPG
+
+## Regression Analysis
+To start with, let's check our basic exploratory analysis. Is zero the difference between Manual and Automatic Transmission (H0)?
+
+```{r}
+model_basic <- lm(mpg ~ gearbox, data=mtcars)
+summary(model_basic)
+```
+Looking at the summary, T-Test rejects the null hypothesis H0 (p-valor is very small), so type of transmission plays a role in the regression.
+Nevertheless, R-squared is only 0,35, that means that there are other variables that we are not taking into account (only a 35% of variance in MPG is associated with gearbox). This is why we need a more complex linear model. Let's explore it:
+
+```{r}
+data(mtcars)
+model_allVars <- aov(mpg ~ ., data = mtcars)
+summary(model_allVars)
+cor(mtcars)[1,]
+```
+Obtained p-values suggest that we should also consider cyl, disp and wt in our model. Moreover, cor functions introduces horsepower ("hp") as another relevant variable. Let's create a new model wiht these variables and check if R-squared increases compared to our first model (mpg ~ gearbox )
+
+```{r}
+model_selected <- lm(mpg ~ cyl + disp + wt + hp + am, data = mtcars)
+summary(model_selected)
+```
+With our new model, R-squared is 0,85, so the model has clearly been improved. On the other hand, the negative values in the coefficients of cyl, wt and hp show that the more power (or the more cyl, more weight) the less mpg.
+
+Finally, let's check the ressiduals of our model:
+
+```{r}
+par(mfrow = c(2, 2))
+plot(model_selected)
+``` 
+In these figures, we can see:
+
+1. Plots 1 & 3 confirms the constant variance assumption. Homocedastic
+2. Normal Q-Q plot shows that the distribution of residuals is normal (close to the line)
+3. There are no significant outliers.
+
+## Conclusion
+According to the plots and tests we have performed, we can conclude that there is a difference in MPG based on transmission type. A manual transmission will provide a higher MPG range.
+Nevertheless, it seems that number of cylinders, horsepower, and weight play a more important role when determining MPG.
