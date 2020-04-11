@@ -1,0 +1,106 @@
+---
+title: "Practical Machine Learning course Project"
+output: html_document
+author: Kike Sedes
+---
+
+\fontfamily{cmr}
+\fontsize{8}{12}
+\selectfont
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Background
+Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement – a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: http://groupware.les.inf.puc-rio.br/har (see the section on the Weight Lifting Exercise Dataset).
+
+## Data
+The training data for this project are available here:
+https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv
+
+The test data are available here:
+https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv
+
+The data for this project come from this source: http://groupware.les.inf.puc-rio.br/har
+
+## Goal
+The goal of your project is to predict the manner in which they did the exercise. This is the "classe" variable in the training set. You may use any of the other variables to predict with. You should create a report describing how you built your model, how you used cross validation, what you think the expected out of sample error is, and why you made the choices you did. You will also use your prediction model to predict 20 different test cases.
+
+## Data loading and exploring.
+```{r message=FALSE, results='hide', echo=FALSE}
+library(knitr)
+library(caret)
+library(rpart)
+library(rpart.plot)
+library(rattle)
+library(randomForest)
+library(corrplot)
+library(reshape2)
+set.seed(141414)
+``` 
+
+```{r message=FALSE,results='hide', echo=FALSE}
+# Urls mentioned above
+urlForTraining <- "http://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+urlForTesting  <- "http://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+
+# download datasets
+training <- read.csv(url(urlForTraining))
+testing  <- read.csv(url(urlForTesting))
+```
+```{r}
+str(training)
+dim(training)
+```
+As we can see with "str", there are some variables with only NA's that we may exclude for our analysis. Let's create one plot with the most significant factor variables identified with str
+
+```{r fig.width=9, fig.height=5}
+theme_set(theme_bw(base_size = 12))
+plot1 <- qplot(classe, cvtd_timestamp, data=training, color=user_name,xlab = "Fashion (A correct execution)",
+        ylab = "time")
+plot1
+```
+It seems as if the participants in this study all performed these trials in temporal order. Moreover they started with exercice A (correct one)
+
+
+## Cleaning data
+As we saw in the lectures during the specialization, we will focus in cleaning our data in three different points:
+
+* Variables with all NA's
+* Variables with variance close to 0
+* Variables highly correlated
+
+```{r}
+# remove variables with Nearly Zero Variance
+NZV <- nearZeroVar(training)
+training <- training[, -NZV]
+testing  <- testing[, -NZV]
+dim(training)
+
+#claeaning variables with too many NAs (>0,95)
+AllNA    <- sapply(training, function(x) mean(is.na(x))) > 0.95
+training <- training[, AllNA==FALSE]
+testing  <- testing[, AllNA==FALSE]
+dim(training)
+
+
+
+#remove variables that are highly correlated (> 0.9)
+cor.matrix <- cor(training[sapply(training, is.numeric)])
+correlated <- melt(cor.matrix)
+correlated <- findCorrelation(cor.matrix, cutoff = .90)
+training <- training[, -correlated]
+testing  <- testing[, -correlated]
+dim(training)
+
+
+# create a partition with the training dataset 
+inTrain  <- createDataPartition(training$classe, p=0.7, list=FALSE)
+trainSet <- training[inTrain, ]
+testSet  <- testing[-inTrain, ]
+dim(training)
+```
+
+
+
