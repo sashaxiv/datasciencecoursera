@@ -129,8 +129,7 @@ cMatrixGBM <- confusionMatrix(testPredictionGBM, testSet$classe)
 testPredictionRF <- predict(ml_model_rf, newdata=testSet)
 cMatrixRF <- confusionMatrix(testPredictionRF, testSet$classe)
 
-AccuracyResults <- data.frame(Model = c('CART', 'GBM', 'RF'),
-                              Accuracy = rbind(cMatrixCART$overall[1], cMatrixGBM$overall[1], cMatrixRF$overall[1]))
+AccuracyResults <- data.frame(Model = c('CART', 'GBM', 'RF'),Accuracy = rbind(cMatrixCART$overall[1], cMatrixGBM$overall[1], cMatrixRF$overall[1]))
 print(AccuracyResults)
 ```
 
@@ -147,4 +146,4 @@ Finally, it is time to work with our validation data sample (â€˜pml-testing.csvâ
 testPredictionValidation <- predict(ml_model_rf, newdata=validation)
 validationPredictionResults <- data.frame(problem_id=validation$problem_id,predicted=testPredictionValidation)
 print(validationPredictionResults)
-``
+```
