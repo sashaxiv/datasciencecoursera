@@ -1,0 +1,40 @@
+---
+title: "My First Leaflet Map"
+author: "Kike Sedes"
+date: "14 April 2020"
+output: html_document
+---
+
+\fontfamily{cmr}
+\fontsize{8}{12}
+\selectfont
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+The source code is available at [GitHub](https://github.com/Krysek/Coursera-Data-Science-Specialization-Developing-Data-Products-Week-2-Assignment). [Just click here!](https://github.com/Krysek/Coursera-Data-Science-Specialization-Developing-Data-Products-Week-2-Assignment)
+
+## My First Leaflet Map
+Create a leaflet map object.
+```{r cars}
+library(leaflet)
+map <- leaflet() %>% addTiles()
+```
+
+Create a marker with the fisrt place I would rather visit when lockout in Spain finish. This is the highest cliff in continental Europe.
+This cliff is very close to the small hamlet of San Andres, and as the saying goes, “if you don’t go whilst alive, you must go after death”.
+```{r}
+myCustomIcon <- makeIcon(
+   iconUrl = "https://i.pinimg.com/originals/7f/6c/dc/7f6cdce4c15b2d1548b618ce5573bfd3.png",
+   iconWidth = 30*408/255, iconHeight = 30,
+   iconAnchorX = 30*408/255/2, iconAnchorY = 30/2
+)
+```
+
+Add the marker to the map and display the map.
+```{r}
+myCustomPopup <- c("<a href='https://es.wikipedia.org/wiki/Acantilados_de_Vix%C3%ADa_de_Herbeira'>Garita de Herbeira<br><img src='https://imgs-akamai.mnstatic.com/d0/2b/d02b2f41b002b8ab383170d11751d7df.jpg' width='210' height='132'  alt='Garita ico' title='Garita Ico'></a>")
+map %>%
+   addTiles() %>%
+   addMarkers(lat=43.7235219, lng=-7.9457748, popup = myCustomPopup, icon = myCustomIcon)
+```
