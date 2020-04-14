@@ -4266,24 +4266,24 @@ summary {
 
 
 <p>The source code is available at <a href="https://github.com/Krysek/Coursera-Data-Science-Specialization-Developing-Data-Products-Week-2-Assignment">GitHub</a>. <a href="https://github.com/Krysek/Coursera-Data-Science-Specialization-Developing-Data-Products-Week-2-Assignment">Just click here!</a></p>
-<div id="my-first-leaflet-map" class="section level2">
-<h2>My First Leaflet Map</h2>
-<p>Create a leaflet map object.</p>
+<div id="week-2-assigment" class="section level3">
+<h3>Week 2 Assigment</h3>
+<p>in the next chunk of code, I will create a map with the fisrt place I would rather visit when the COD-19 lockout in Spain finish. This place is the highest cliff in continental Europe.Moreover, this stunning cliff is very close to the small hamlet of San Andres, and as the saying goes, “if you don’t go whilst alive, you must go after death”.</p>
 <pre class="r"><code>library(leaflet)
-map &lt;- leaflet() %&gt;% addTiles()</code></pre>
-<p>Create a marker with the fisrt place I would rather visit when lockout in Spain finish. This is the highest cliff in continental Europe. This cliff is very close to the small hamlet of San Andres, and as the saying goes, “if you don’t go whilst alive, you must go after death”.</p>
-<pre class="r"><code>myCustomIcon &lt;- makeIcon(
+map &lt;- leaflet() %&gt;% addTiles()
+
+myCustomIcon &lt;- makeIcon(
    iconUrl = &quot;https://i.pinimg.com/originals/7f/6c/dc/7f6cdce4c15b2d1548b618ce5573bfd3.png&quot;,
    iconWidth = 30*408/255, iconHeight = 30,
    iconAnchorX = 30*408/255/2, iconAnchorY = 30/2
-)</code></pre>
-<p>Add the marker to the map and display the map.</p>
-<pre class="r"><code>myCustomPopup &lt;- c(&quot;&lt;a href='https://es.wikipedia.org/wiki/Acantilados_de_Vix%C3%ADa_de_Herbeira'&gt;Garita de Herbeira&lt;br&gt;&lt;img src='https://imgs-akamai.mnstatic.com/d0/2b/d02b2f41b002b8ab383170d11751d7df.jpg' width='210' height='132'  alt='Garita ico' title='Garita Ico'&gt;&lt;/a&gt;&quot;)
+)
+
+myCustomPopup &lt;- c(&quot;&lt;a href='https://es.wikipedia.org/wiki/Acantilados_de_Vix%C3%ADa_de_Herbeira'&gt;Garita de Herbeira&lt;br&gt;&lt;img src='https://imgs-akamai.mnstatic.com/d0/2b/d02b2f41b002b8ab383170d11751d7df.jpg' width='210' height='132'  alt='Garita ico' title='Garita Ico'&gt;&lt;/a&gt;&quot;)
 map %&gt;%
    addTiles() %&gt;%
    addMarkers(lat=43.7235219, lng=-7.9457748, popup = myCustomPopup, icon = myCustomIcon)</code></pre>
-<div id="htmlwidget-ce219ba29ec3bccb60fb" style="width:672px;height:480px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-ce219ba29ec3bccb60fb">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addMarkers","args":[43.7235219,-7.9457748,{"iconUrl":{"data":"https://i.pinimg.com/originals/7f/6c/dc/7f6cdce4c15b2d1548b618ce5573bfd3.png","index":0},"iconWidth":48,"iconHeight":30,"iconAnchorX":24,"iconAnchorY":15},null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},"<a href='https://es.wikipedia.org/wiki/Acantilados_de_Vix%C3%ADa_de_Herbeira'>Garita de Herbeira<br><img src='https://imgs-akamai.mnstatic.com/d0/2b/d02b2f41b002b8ab383170d11751d7df.jpg' width='210' height='132'  alt='Garita ico' title='Garita Ico'><\/a>",null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[43.7235219,43.7235219],"lng":[-7.9457748,-7.9457748]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-cfeab389142228b2bed5" style="width:672px;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-cfeab389142228b2bed5">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addMarkers","args":[43.7235219,-7.9457748,{"iconUrl":{"data":"https://i.pinimg.com/originals/7f/6c/dc/7f6cdce4c15b2d1548b618ce5573bfd3.png","index":0},"iconWidth":48,"iconHeight":30,"iconAnchorX":24,"iconAnchorY":15},null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},"<a href='https://es.wikipedia.org/wiki/Acantilados_de_Vix%C3%ADa_de_Herbeira'>Garita de Herbeira<br><img src='https://imgs-akamai.mnstatic.com/d0/2b/d02b2f41b002b8ab383170d11751d7df.jpg' width='210' height='132'  alt='Garita ico' title='Garita Ico'><\/a>",null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[43.7235219,43.7235219],"lng":[-7.9457748,-7.9457748]}},"evals":[],"jsHooks":[]}</script>
 </div>
 
 
