@@ -1,0 +1,56 @@
+---
+title: "My First Leaflet Map"
+author: "Kike Sedes"
+date: "14 April 2020"
+output: html_document
+---
+
+\fontfamily{cmr}
+\fontsize{8}{12}
+\selectfont
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Week 2 Assignment
+In the next chunk of code, I will create a map with the first place I would rather visit when the COD-19 lockout in Spain finish. This place is the highest cliff in continental Europe. Moreover, this stunning cliff is very close to the small hamlet of San Andres, and as the saying goes, “if you don’t go whilst alive, you must go after death”.
+```{r cars}
+
+
+dataResumida = data %>% select(1,2,3,4,tail(names(.), 3))
+
+write.xlsx(dataResumida,
+  "C:/Users/enriquesf/Documents/COVID-19/resumenR.xlsx")
+
+
+
+
+#df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/2011_february_us_airport_traffic.csv')
+newNames <- c("state", "country", "Lat", "Long", "Day1", "Day2", "Day3")
+setnames(dataResumida, newNames)
+
+# geo styling
+g <- list(
+    scope = 'usa',
+    projection = list(type = 'albers usa'),
+    showland = TRUE,
+    landcolor = toRGB("gray95"),
+    subunitcolor = toRGB("gray85"),
+    countrycolor = toRGB("gray85"),
+    countrywidth = 0.5,
+    subunitwidth = 0.5
+)
+
+fig <- plot_geo(dataResumida, lat = ~Lat, lon = ~Long)
+fig <- fig %>% add_markers(
+    text = ~paste(country, paste("Cod-19 Positives:", Day3), sep = "<br />"),
+    color = ~Day3, symbol = I("square"), size = I(8), hoverinfo = "text"
+)
+fig <- fig %>% colorbar(title = "Positive Cases Cod19<br />February 2011")
+fig <- fig %>% layout(
+    title = 'Cod-19 per Country<br />(Hover for numbers)', geo = g
+)
+
+fig
+```
