@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/599095/b7ff7b0c88e14f8ea20121d12d924f79
+bundleId: https://api.rpubs.com/api/v1/document/599095/b7ff7b0c88e14f8ea20121d12d924f79
+url: http://rpubs.com/KikeS/599095
+when: 1586889998.4371
