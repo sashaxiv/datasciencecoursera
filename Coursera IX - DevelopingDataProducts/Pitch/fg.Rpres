@@ -1,0 +1,53 @@
+---
+title: "Coursera : Developing Data Products : Week4 Assignment"
+author: "Kike SF"
+date: "April 16, 2020"
+output: slidy_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Overview
+
+This is an RStudio shiny application developed as a part of final project in the Developing Data Products course in Coursera Data Science Specialization track. The application works with Iris dataSets creating some basic Kmeans Plots to cluster data examples. 
+
+
+## The Application includes the following:
+
+- The server.R and ui.R codes are posted on github at: <https://github.com/MDKinney29077/DevelopingDataProducts>
+- The App can be found at: <https://mdkinney29077.shinyapps.io/week4assignment/>
+
+## R Code for the Application
+
+```{r, echo = TRUE, warning=FALSE}
+library(shiny)
+Perform <- read.csv("U:/EA/Course 9/Week 4/CCPerformance.csv")
+# Ui.R code
+library(shiny)
+Perform <- read.csv("U:/EA/Course 9/Week 4/CCPerformance.csv")
+fluidPage(
+  checkboxGroupInput("variable", "Variables:",
+                     c("Overall Results" = "Overall",
+                       "Team 1 Results" = "Team1",
+                       "Team 2 Results" = "Team2",
+                       "Team 3 Results" = "Team3")),
+  tableOutput("data")
+)
+# Server.R code
+function(input, output, session) {
+  output$data <- renderTable({
+    Perform[, c("Performance.Measures", input$variable), drop = FALSE]
+  }, rownames = TRUE)
+}
+```
+
+## Table of Data 
+
+```{r, echo=FALSE, warning=FALSE}
+Perform <- read.csv("U:/EA/Course 9/Week 4/CCPerformance.csv")
+Perform
+```
+
+This is the table of data that was used for this application.

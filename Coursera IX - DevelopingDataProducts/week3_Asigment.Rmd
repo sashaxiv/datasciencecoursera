@@ -1,7 +1,7 @@
 ---
-title: "My First Leaflet Map"
+title: "My First Plotty Plot"
 author: "Kike Sedes"
-date: "14 April 2020"
+date: "15 April 2020"
 output: html_document
 ---
 
@@ -13,27 +13,27 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-### Week 2 Assignment
-In the next chunk of code, I will create a map with the first place I would rather visit when the COD-19 lockout in Spain finish. This place is the highest cliff in continental Europe. Moreover, this stunning cliff is very close to the small hamlet of San Andres, and as the saying goes, “if you don’t go whilst alive, you must go after death”.
-```{r cars}
+### Week 3 Assignment
+In the next chunk of code, I will create a map with some data about COVID-19 positive cases. You can find latest data in this Github:https://github.com/CSSEGISandData/COVID-19/blob/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv.
 
+```{r fig.width=12, fig.height=8, comment="", results=FALSE, echo=TRUE, message=FALSE}
+library(dplyr)
+library(data.table)
+library(plotly)
+```
+```{r fig.width=12, fig.height=8, comment=""}
+data<-fread("time_series_covid19_confirmed_global.csv", sep=",")
 
-dataResumida = data %>% select(1,2,3,4,tail(names(.), 3))
+#Get Data that we are going to plot
+dataForMap = data %>% select(1,2,3,4,tail(names(.), 3))
 
-write.xlsx(dataResumida,
-  "C:/Users/enriquesf/Documents/COVID-19/resumenR.xlsx")
-
-
-
-
-#df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/2011_february_us_airport_traffic.csv')
+#New ColNames for our dataset
 newNames <- c("state", "country", "Lat", "Long", "Day1", "Day2", "Day3")
-setnames(dataResumida, newNames)
+setnames(dataForMap, newNames)
 
-# geo styling
+#Geo styling
 g <- list(
-    scope = 'usa',
-    projection = list(type = 'albers usa'),
+    #projection = list(type = 'albers usa'),
     showland = TRUE,
     landcolor = toRGB("gray95"),
     subunitcolor = toRGB("gray85"),
@@ -42,7 +42,8 @@ g <- list(
     subunitwidth = 0.5
 )
 
-fig <- plot_geo(dataResumida, lat = ~Lat, lon = ~Long)
+#Final Plot
+fig <- plot_geo(dataForMap, lat = ~Lat, lon = ~Long)
 fig <- fig %>% add_markers(
     text = ~paste(country, paste("Cod-19 Positives:", Day3), sep = "<br />"),
     color = ~Day3, symbol = I("square"), size = I(8), hoverinfo = "text"

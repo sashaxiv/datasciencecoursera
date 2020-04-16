@@ -12,10 +12,9 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-The source code is available at [GitHub](https://github.com/Krysek/Coursera-Data-Science-Specialization-Developing-Data-Products-Week-2-Assignment). [Just click here!](https://github.com/Krysek/Coursera-Data-Science-Specialization-Developing-Data-Products-Week-2-Assignment)
 
-### Week 2 Assigment
-In the next chunk of code, I will create a map with the fisrt place I would rather visit when the COD-19 lockout in Spain finish. This place is the highest cliff in continental Europe. Moreover, this stunning cliff is very close to the small hamlet of San Andres, and as the saying goes, “if you don’t go whilst alive, you must go after death”.
+### Week 2 Assignment
+In the next chunk of code, I will create a map with the first place I would rather visit when the COD-19 lockout in Spain finish. This place is the highest cliff in continental Europe. Moreover, this stunning cliff is very close to the small hamlet of San Andres, and as the saying goes, “if you don’t go whilst alive, you must go after death”.
 ```{r cars}
 library(leaflet)
 map <- leaflet() %>% addTiles()
