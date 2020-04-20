@@ -1,8 +1,9 @@
 ---
-title: "DataCapstone Week 1"
+title: "DataCapstone Week 1 & 2"
 output: html_document
 ---
-
+jenv add /Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home
+oracle64-1.8.0_162
 \fontfamily{cmr}
 \fontsize{8}{12}
 \selectfont
@@ -11,8 +12,9 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Coursera Data Science Capstone
+## Coursera Data Science Capstone - WEEK I & WEEK II Tasks
 
+## WEEK I
 The goal of this capstone is to mimic the experience of being a data scientist by using data science techniques learned from all 9 specialization courses to create a data product and presentation to Swiftkey.
 
 For Week 1, the main objective is to understand the problem, acquire the data, and understand the type of data we dealing with. The data is available to be downloaded from
@@ -25,55 +27,59 @@ The files are extracted from the zip file with three working files:
 * “en_US.news.txt”
 * “en_US.twitter.txt”
 
-##Data preparation
+### Data Loading
 Several library chosen to begin with are as below:
 
 ```{r message=FALSE,results='hide', echo=TRUE, cache=TRUE}
 library(magrittr)
 library(stringi)
 library(ggplot2)
+library(wordcloud)
+library(tm)
+library(SnowballC)
+library(RWeka)
 #setwd("Coursera X - Final Capstone/")
 blogfile<- "final/en_US/en_US.blogs.txt"
 newsfile<- "final/en_US/en_US.news.txt"
 twitterfile<- "final/en_US/en_US.twitter.txt"
 ```
-##Data Exploring
+### Data Basic Exploring
 Let's count number of lines and words by dataset
 
 ```{r message=FALSE, echo=TRUE, cache=TRUE}
-blog.line<-readLines(blogfile,encoding="UTF-8", skipNul = TRUE)
-news.line<-readLines(newsfile,encoding="UTF-8", skipNul = TRUE)
-twitter.line<-readLines(twitterfile,encoding="UTF-8", skipNul = TRUE)
+blogLines<-readLines(blogfile,encoding="UTF-8", skipNul = TRUE)
+newsLines<-readLines(newsfile,encoding="UTF-8", skipNul = TRUE)
+twitterLines<-readLines(twitterfile,encoding="UTF-8", skipNul = TRUE)
 
-blog.word.count<-stri_count_words(blog.line)
-news.word.count<-stri_count_words(news.line)
-twitter.word.count<-stri_count_words(twitter.line)
+blogWords<-stri_count_words(blogLines)
+newsWords<-stri_count_words(newsLines)
+twitterWordst<-stri_count_words(twitterLines)
 ```
 ### Blog
 Number of lines / Number of Words
 ```{r message=FALSE, echo=TRUE}
-length(blog.line)
-length(blog.word.count)
+length(blogLines)
+sum(blogWords)
 ```
 
 
 ### Twitter
 Number of lines / Number of Words
 ```{r message=FALSE, echo=TRUE}
-length(twitter.line)
-length(twitter.word.count)
+length(twitterLines)
+sum(twitterWordst)
 ```
 
 
 ### News
 Number of lines / Number of Words
 ```{r message=FALSE, echo=TRUE}
-length(news.line)
-length(news.word.count)
+length(newsLines)
+sum(newsWords)
 ```
 
-### Quiz Week 1 Questions
-1. Question
+## Week 1 - Quiz Questions
+### 1. Question
 The en_US.blogs.txt file is how many megabytes?
 
 ```{r message=FALSE, echo=TRUE}
@@ -83,69 +89,128 @@ sizeKB <- sizeB/1024
 sizeMB <-  sizeKB/1024
 sizeMB
 ```
-*200
-150
-250
-100
 
-2. Question
+
+### 2. Question
 The en_US.twitter.txt has how many lines of text?
 ```{r message=FALSE, echo=TRUE}
-length(twitter.line)
+length(twitterLines)
 ```
-Around 1 million
-*Over 2 million
-Around 2 hundred thousand
-Around 5 hundred thousand
 
-3. Question
+
+### 3. Question
 What is the length of the longest line seen in any of the three en_US data sets?
 Counting Blog file
 ```{r message=FALSE, echo=TRUE}
-summary(nchar(blog.line))
-summary(nchar(news.line))
-summary(nchar(twitter.line))
+summary(nchar(blogLines))
+summary(nchar(newsLines))
+summary(nchar(twitterLines))
 
 ```
-*Over 40 thousand in the blogs data set
-Over 40 thousand in the news data set
-Over 11 thousand in the blogs data set
-Over 11 thousand in the news data set
 
-4. Question
+
+### 4. Question
 In the en_US twitter data set, if you divide the number of lines where the word “love” (all lowercase) occurs by the number of lines the word “hate” (all lowercase) occurs, about what do you get?
 ```{r message=FALSE, echo=TRUE}
-lovelines <- (grepl(" love ", twitter.line))
+lovelines <- (grepl(" love ", twitterLines))
 numlove <- table(lovelines)["TRUE"]
 
-hatelines <- (grepl(" hate ", twitter.line))
+hatelines <- (grepl(" hate ", twitterLines))
 numhate <- table(hatelines)["TRUE"]
 
 proportion <- numlove/numhate
 proportion
 ```
-0.5
-2
-0.25
-* 4
 
-5. Question
+
+### 5. Question
 The one tweet in the en_US twitter data set that matches the word “biostats” says what?
 ```{r message=FALSE, echo=TRUE}
-lineTarget <- grep("biostats",twitter.line)
-twitter.line[lineTarget]
+lineTarget <- grep("biostats",twitterLines)
+twitterLines[lineTarget]
 ``` 
-They just enrolled in a biostat program
-It’s a tweet about Jeff Leek from one of his students in class
-* They haven’t studied for their biostats exam
-They need biostats help on their project
 
-6. Question
+
+### 6. Question
 How many tweets have the exact characters “A computer once beat me at chess, but it was no match for me at kickboxing”. (I.e. the line matches those characters exactly.)
 ```{r message=FALSE, echo=TRUE}
-grep("A computer once beat me at chess, but it was no match for me at kickboxing", twitter.line)
+grep("A computer once beat me at chess, but it was no match for me at kickboxing", twitterLines)
 ```
-* 3
-0
-1
-2
+
+## Week 2 - Exploratory Data Analysis
+As we have just seen in the Week I, files are huge. Therefore, for this task of exploratory data, I will take a sample of the data.
+Moreover, we will pass some "tm package" functions to clean the data:
+* Ensure the data is ASCII.
+* To lowercase.
+* Digits, puntuation, stopwords, white spaces will be elimated
+
+```{r message=FALSE, echo=TRUE}
+set.seed(1414)
+testData<-c(sample(blogLines, length(blogLines) * 0.0025),
+                 sample(newsLines, length(newsLines) * 0.0025),
+                 sample(twitterLines, length(twitterLines) * 0.0025))
+
+corpusData<-VCorpus(VectorSource(testData))
+# Transformation using "tm" functions
+corpusData <- tm_map(corpusData, removeNumbers)
+corpusData <- tm_map(corpusData, tolower)
+corpusData <- tm_map(corpusData, removePunctuation)
+corpusData <- tm_map(corpusData, removeWords, stopwords("english"))
+corpusData <- tm_map(corpusData, stripWhitespace)
+corpusData <- tm_map(corpusData, stemDocument)
+corpusData <- tm_map(corpusData, PlainTextDocument)
+``` 
+
+It is time now to create some plots to explore the data. Firstly, let's create some histograms to deal with frecuency of nGrams
+
+```{r message=FALSE, echo=TRUE}
+oneWordTokenizer<- function(x) NGramTokenizer(x, Weka_control(min = 1, max = 1))
+twoWordTokenizer <- function(x) NGramTokenizer(x, Weka_control(min = 2, max = 2))
+threeWordTokenizer <- function(x) NGramTokenizer(x, Weka_control(min = 3, max = 3))
+
+oneWordMatrix <- TermDocumentMatrix(corpusData, control = list(tokenize = oneWordTokenizer))
+twoWordMatrix <- TermDocumentMatrix(corpusData, control = list(tokenize = twoWordTokenizer))
+threeWordMatrix <- TermDocumentMatrix(corpusData, control = list(tokenize = threeWordTokenizer))
+
+oneWordcorpus <- findFreqTerms(oneWordMatrix,lowfreq = 20)
+twoWordcorpus <- findFreqTerms(twoWordMatrix,lowfreq=20)
+threecorpus <- findFreqTerms(threeWordMatrix,lowfreq=20)
+
+oneWordcorpus_freq <- rowSums(as.matrix(oneWordMatrix[oneWordcorpus,]))
+oneWordcorpus_freq <- data.frame(word=names(oneWordcorpus_freq), frequency=oneWordcorpus_freq)
+twoWordcorpus_freq <- rowSums(as.matrix(twoWordMatrix[twoWordcorpus,]))
+twoWordcorpus_freq <- data.frame(word=names(twoWordcorpus_freq), frequency=twoWordcorpus_freq)
+threecorpus_freq <- rowSums(as.matrix(threeWordMatrix[threecorpus,]))
+threecorpus_freq <- data.frame(word=names(threecorpus_freq), frequency=threecorpus_freq)
+
+oneWordcorpus_freq_ordered<-arrange(oneWordcorpus_freq,desc(frequency))
+oneWordcorpus_freq_ordered<-head(oneWordcorpus_freq_ordered,n=10)
+twoWordcorpus_freq_ordered<-arrange(twoWordcorpus_freq,desc(frequency))
+twoWordcorpus_freq_ordered<-head(twoWordcorpus_freq_ordered,n=10)
+threecorpus_freq_ordered<-arrange(threecorpus_freq,desc(frequency))
+threecorpus_freq_ordered<-head(threecorpus_freq_ordered,n=10)
+
+g1 <- ggplot(data = head(oneWordcorpus_freq_ordered,10), aes(x = reorder(word, -frequency), y = frequency)) + 
+        geom_bar(stat = "identity", fill = "green") + 
+        ggtitle(paste("Unigrams")) + 
+        xlab("Unigrams") + ylab("Frequency") + 
+        theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+g2 <- ggplot(data = head(twoWordcorpus_freq_ordered,10), aes(x = reorder(word, -frequency), y = frequency)) + 
+        geom_bar(stat = "identity", fill = "orange") + 
+        ggtitle(paste("Bigrams")) + 
+        xlab("Bigrams") + ylab("Frequency") + 
+        theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+g3 <- ggplot(data = head(threecorpus_freq_ordered,10), aes(x = reorder(word, -frequency), y = frequency)) + 
+        geom_bar(stat = "identity", fill = "red") + 
+        ggtitle(paste("Trigrams")) + 
+        xlab("Trigrams") + ylab("Frequency") + 
+        theme(axis.text.x = element_text(angle = 90, hjust = 1))
+gridExtra::grid.arrange(g1, g2, g3, ncol = 3)
+
+
+wordcloud(corpusData, max.words = 250, random.order = FALSE, colors=brewer.pal(8,"Dark2"))  
+```
+
+
