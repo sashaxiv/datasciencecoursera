@@ -1,0 +1,151 @@
+---
+title: "DataCapstone Week 1"
+output: html_document
+---
+
+\fontfamily{cmr}
+\fontsize{8}{12}
+\selectfont
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Coursera Data Science Capstone
+
+The goal of this capstone is to mimic the experience of being a data scientist by using data science techniques learned from all 9 specialization courses to create a data product and presentation to Swiftkey.
+
+For Week 1, the main objective is to understand the problem, acquire the data, and understand the type of data we dealing with. The data is available to be downloaded from
+
+https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip
+
+The files are extracted from the zip file with three working files:
+
+* “en_US.blogs.txt”
+* “en_US.news.txt”
+* “en_US.twitter.txt”
+
+##Data preparation
+Several library chosen to begin with are as below:
+
+```{r message=FALSE,results='hide', echo=TRUE, cache=TRUE}
+library(magrittr)
+library(stringi)
+library(ggplot2)
+#setwd("Coursera X - Final Capstone/")
+blogfile<- "final/en_US/en_US.blogs.txt"
+newsfile<- "final/en_US/en_US.news.txt"
+twitterfile<- "final/en_US/en_US.twitter.txt"
+```
+##Data Exploring
+Let's count number of lines and words by dataset
+
+```{r message=FALSE, echo=TRUE, cache=TRUE}
+blog.line<-readLines(blogfile,encoding="UTF-8", skipNul = TRUE)
+news.line<-readLines(newsfile,encoding="UTF-8", skipNul = TRUE)
+twitter.line<-readLines(twitterfile,encoding="UTF-8", skipNul = TRUE)
+
+blog.word.count<-stri_count_words(blog.line)
+news.word.count<-stri_count_words(news.line)
+twitter.word.count<-stri_count_words(twitter.line)
+```
+### Blog
+Number of lines / Number of Words
+```{r message=FALSE, echo=TRUE}
+length(blog.line)
+length(blog.word.count)
+```
+
+
+### Twitter
+Number of lines / Number of Words
+```{r message=FALSE, echo=TRUE}
+length(twitter.line)
+length(twitter.word.count)
+```
+
+
+### News
+Number of lines / Number of Words
+```{r message=FALSE, echo=TRUE}
+length(news.line)
+length(news.word.count)
+```
+
+### Quiz Week 1 Questions
+1. Question
+The en_US.blogs.txt file is how many megabytes?
+
+```{r message=FALSE, echo=TRUE}
+FileInfo <- file.info(blogfile)
+sizeB <- FileInfo$size
+sizeKB <- sizeB/1024
+sizeMB <-  sizeKB/1024
+sizeMB
+```
+*200
+150
+250
+100
+
+2. Question
+The en_US.twitter.txt has how many lines of text?
+```{r message=FALSE, echo=TRUE}
+length(twitter.line)
+```
+Around 1 million
+*Over 2 million
+Around 2 hundred thousand
+Around 5 hundred thousand
+
+3. Question
+What is the length of the longest line seen in any of the three en_US data sets?
+Counting Blog file
+```{r message=FALSE, echo=TRUE}
+summary(nchar(blog.line))
+summary(nchar(news.line))
+summary(nchar(twitter.line))
+
+```
+*Over 40 thousand in the blogs data set
+Over 40 thousand in the news data set
+Over 11 thousand in the blogs data set
+Over 11 thousand in the news data set
+
+4. Question
+In the en_US twitter data set, if you divide the number of lines where the word “love” (all lowercase) occurs by the number of lines the word “hate” (all lowercase) occurs, about what do you get?
+```{r message=FALSE, echo=TRUE}
+lovelines <- (grepl(" love ", twitter.line))
+numlove <- table(lovelines)["TRUE"]
+
+hatelines <- (grepl(" hate ", twitter.line))
+numhate <- table(hatelines)["TRUE"]
+
+proportion <- numlove/numhate
+proportion
+```
+0.5
+2
+0.25
+* 4
+
+5. Question
+The one tweet in the en_US twitter data set that matches the word “biostats” says what?
+```{r message=FALSE, echo=TRUE}
+lineTarget <- grep("biostats",twitter.line)
+twitter.line[lineTarget]
+``` 
+They just enrolled in a biostat program
+It’s a tweet about Jeff Leek from one of his students in class
+* They haven’t studied for their biostats exam
+They need biostats help on their project
+
+6. Question
+How many tweets have the exact characters “A computer once beat me at chess, but it was no match for me at kickboxing”. (I.e. the line matches those characters exactly.)
+```{r message=FALSE, echo=TRUE}
+grep("A computer once beat me at chess, but it was no match for me at kickboxing", twitter.line)
+```
+* 3
+0
+1
+2
