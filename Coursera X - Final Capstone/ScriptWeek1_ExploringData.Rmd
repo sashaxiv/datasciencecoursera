@@ -2,8 +2,7 @@
 title: "DataCapstone Week 1 & 2"
 output: html_document
 ---
-jenv add /Library/Java/JavaVirtualMachines/jdk1.8.0_162.jdk/Contents/Home
-oracle64-1.8.0_162
+
 \fontfamily{cmr}
 \fontsize{8}{12}
 \selectfont
@@ -30,7 +29,7 @@ The files are extracted from the zip file with three working files:
 ### Data Loading
 Several library chosen to begin with are as below:
 
-```{r message=FALSE,results='hide', echo=TRUE, cache=TRUE}
+```{r message=FALSE, echo=TRUE,warning=FALSE, comment=""}
 library(magrittr)
 library(stringi)
 library(ggplot2)
@@ -38,15 +37,16 @@ library(wordcloud)
 library(tm)
 library(SnowballC)
 library(RWeka)
+library(dplyr)
 #setwd("Coursera X - Final Capstone/")
-blogfile<- "final/en_US/en_US.blogs.txt"
-newsfile<- "final/en_US/en_US.news.txt"
-twitterfile<- "final/en_US/en_US.twitter.txt"
+blogfile<- "Coursera-SwiftKey/final/en_US/en_US.blogs.txt"
+newsfile<- "Coursera-SwiftKey/final/en_US/en_US.news.txt"
+twitterfile<- "Coursera-SwiftKey/final/en_US/en_US.twitter.txt"
 ```
 ### Data Basic Exploring
 Let's count number of lines and words by dataset
 
-```{r message=FALSE, echo=TRUE, cache=TRUE}
+```{r message=FALSE, echo=TRUE, cache=TRUE, comment=""}
 blogLines<-readLines(blogfile,encoding="UTF-8", skipNul = TRUE)
 newsLines<-readLines(newsfile,encoding="UTF-8", skipNul = TRUE)
 twitterLines<-readLines(twitterfile,encoding="UTF-8", skipNul = TRUE)
@@ -138,19 +138,33 @@ grep("A computer once beat me at chess, but it was no match for me at kickboxing
 ```
 
 ## Week 2 - Exploratory Data Analysis
-As we have just seen in the Week I, files are huge. Therefore, for this task of exploratory data, I will take a sample of the data.
+As we have just seen in the Week I, files are too big. Therefore, for this task of exploratory data, I will take a sample of the data.
 Moreover, we will pass some "tm package" functions to clean the data:
+
 * Ensure the data is ASCII.
 * To lowercase.
 * Digits, puntuation, stopwords, white spaces will be elimated
 
-```{r message=FALSE, echo=TRUE}
-set.seed(1414)
-testData<-c(sample(blogLines, length(blogLines) * 0.0025),
-                 sample(newsLines, length(newsLines) * 0.0025),
-                 sample(twitterLines, length(twitterLines) * 0.0025))
+Finally, it is time now to create some plots to explore the data. Firstly, let's create some histograms to deal with frecuency of nGrams 
 
-corpusData<-VCorpus(VectorSource(testData))
+```{r message=FALSE, echo=TRUE, warning=FALSE, comment=""}
+set.seed(1414)
+data_blogs <- iconv(blogLines,  to="ASCII", sub="")
+data_news <- iconv(newsLines,  to="ASCII", sub="")
+data_twitter <- iconv(twitterLines,  to="ASCII", sub="")
+
+#to remove emojis
+data_blogs <- iconv(data_blogs, 'UTF-8', 'ASCII')
+data_news <- iconv(data_news, 'UTF-8', 'ASCII')
+data_twitter <- iconv(data_twitter, 'UTF-8', 'ASCII')
+
+sampleData<-c(sample(data_blogs, length(data_blogs) * 0.02),
+                sample(data_news, length(data_news) * 0.02),
+                sample(data_twitter, length(data_twitter) * 0.02))
+
+corpusData<-VCorpus(VectorSource(sampleData))
+rm(data_blogs, data_news, data_twitter)
+
 # Transformation using "tm" functions
 corpusData <- tm_map(corpusData, removeNumbers)
 corpusData <- tm_map(corpusData, tolower)
@@ -159,11 +173,7 @@ corpusData <- tm_map(corpusData, removeWords, stopwords("english"))
 corpusData <- tm_map(corpusData, stripWhitespace)
 corpusData <- tm_map(corpusData, stemDocument)
 corpusData <- tm_map(corpusData, PlainTextDocument)
-``` 
 
-It is time now to create some plots to explore the data. Firstly, let's create some histograms to deal with frecuency of nGrams
-
-```{r message=FALSE, echo=TRUE}
 oneWordTokenizer<- function(x) NGramTokenizer(x, Weka_control(min = 1, max = 1))
 twoWordTokenizer <- function(x) NGramTokenizer(x, Weka_control(min = 2, max = 2))
 threeWordTokenizer <- function(x) NGramTokenizer(x, Weka_control(min = 3, max = 3))
@@ -172,23 +182,23 @@ oneWordMatrix <- TermDocumentMatrix(corpusData, control = list(tokenize = oneWor
 twoWordMatrix <- TermDocumentMatrix(corpusData, control = list(tokenize = twoWordTokenizer))
 threeWordMatrix <- TermDocumentMatrix(corpusData, control = list(tokenize = threeWordTokenizer))
 
-oneWordcorpus <- findFreqTerms(oneWordMatrix,lowfreq = 20)
-twoWordcorpus <- findFreqTerms(twoWordMatrix,lowfreq=20)
-threecorpus <- findFreqTerms(threeWordMatrix,lowfreq=20)
+oneWordcorpus <- findFreqTerms(oneWordMatrix,lowfreq = 30)
+twoWordcorpus <- findFreqTerms(twoWordMatrix,lowfreq=30)
+threeWordcorpus <- findFreqTerms(threeWordMatrix,lowfreq=30)
 
 oneWordcorpus_freq <- rowSums(as.matrix(oneWordMatrix[oneWordcorpus,]))
 oneWordcorpus_freq <- data.frame(word=names(oneWordcorpus_freq), frequency=oneWordcorpus_freq)
 twoWordcorpus_freq <- rowSums(as.matrix(twoWordMatrix[twoWordcorpus,]))
 twoWordcorpus_freq <- data.frame(word=names(twoWordcorpus_freq), frequency=twoWordcorpus_freq)
-threecorpus_freq <- rowSums(as.matrix(threeWordMatrix[threecorpus,]))
-threecorpus_freq <- data.frame(word=names(threecorpus_freq), frequency=threecorpus_freq)
+threeWordcorpus_freq <- rowSums(as.matrix(threeWordMatrix[threeWordcorpus,]))
+threeWordcorpus_freq <- data.frame(word=names(threeWordcorpus_freq), frequency=threeWordcorpus_freq)
 
 oneWordcorpus_freq_ordered<-arrange(oneWordcorpus_freq,desc(frequency))
 oneWordcorpus_freq_ordered<-head(oneWordcorpus_freq_ordered,n=10)
 twoWordcorpus_freq_ordered<-arrange(twoWordcorpus_freq,desc(frequency))
 twoWordcorpus_freq_ordered<-head(twoWordcorpus_freq_ordered,n=10)
-threecorpus_freq_ordered<-arrange(threecorpus_freq,desc(frequency))
-threecorpus_freq_ordered<-head(threecorpus_freq_ordered,n=10)
+threeWordcorpus_freq_ordered<-arrange(threeWordcorpus_freq,desc(frequency))
+threeWordcorpus_freq_ordered<-head(threeWordcorpus_freq_ordered,n=10)
 
 g1 <- ggplot(data = head(oneWordcorpus_freq_ordered,10), aes(x = reorder(word, -frequency), y = frequency)) + 
         geom_bar(stat = "identity", fill = "green") + 
@@ -202,13 +212,14 @@ g2 <- ggplot(data = head(twoWordcorpus_freq_ordered,10), aes(x = reorder(word, -
         xlab("Bigrams") + ylab("Frequency") + 
         theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-g3 <- ggplot(data = head(threecorpus_freq_ordered,10), aes(x = reorder(word, -frequency), y = frequency)) + 
+g3 <- ggplot(data = head(threeWordcorpus_freq_ordered,10), aes(x = reorder(word, -frequency), y = frequency)) + 
         geom_bar(stat = "identity", fill = "red") + 
         ggtitle(paste("Trigrams")) + 
         xlab("Trigrams") + ylab("Frequency") + 
         theme(axis.text.x = element_text(angle = 90, hjust = 1))
-gridExtra::grid.arrange(g1, g2, g3, ncol = 3)
 
+
+gridExtra::grid.arrange(g1, g2, g3, ncol = 3)
 
 wordcloud(corpusData, max.words = 250, random.order = FALSE, colors=brewer.pal(8,"Dark2"))  
 ```
