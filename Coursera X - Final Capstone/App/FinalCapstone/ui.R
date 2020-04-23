@@ -15,6 +15,5 @@ fluidPage(
         verbatimTextOutput("inputValue"),
         h4('next word :'),
         verbatimTextOutput("prediction")
-        
-    )
+        )
 )
